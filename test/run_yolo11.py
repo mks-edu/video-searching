@@ -5,8 +5,8 @@ from ultralytics import YOLO
 # Load a COCO-pretrained YOLO11x model
 model = YOLO("yolo11x.pt")
 
-# Run inference with the YOLO11n model on the 'bus.jpg' image
-image_frame = r"\Keyframe\Keyframes_L01\keyframes\L01_V001\032.jpg"
+# Run inference with the YOLO11n model on a sample image
+image_frame = r"data\16.jpg"
 results = model(image_frame)
 
 for r in results:
