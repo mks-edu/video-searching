@@ -3,7 +3,7 @@ import math
 from ultralytics import YOLO
 
 # Load a COCO-pretrained YOLO11x model
-model = YOLO("yolo11n.pt")
+model = YOLO("yolo11x.pt")
 
 # Run inference with the YOLO11n model on the 'bus.jpg' image
 image_frame = r"\Keyframe\Keyframes_L01\keyframes\L01_V001\032.jpg"
