@@ -3,8 +3,9 @@ import json
 import cv2
 from keyframe.detect_object import detect_objects
 from keyframe.text import extract_text_img
+from keyframe.frame import save_keyframe_data
 
-def process_keyframes(video_folder, output_json_fpath):
+def process_keyframes(video_folder):
     '''
     :param video_folder: structure of folder of key frames such as
     video_name1:
@@ -51,13 +52,11 @@ def process_keyframes(video_folder, output_json_fpath):
 
         data[video_name] = keyframe_data
 
-    # Save
-    with open(output_json_fpath, 'w') as f:
-        json.dump(data, f)
-
     return data
 
+
 # Example usage:
-input_folder = r'V:\AIC-2024\Data_2024\Keyframe\Keyframes_L01\keyframes'
-output_json_fpath = "1_keyframe_data.json"
-processed_data = process_keyframes(input_folder, output_json_fpath)
+input_folder = r'V:\AIC-2024\Data_2024\Keyframe\keyframes'
+output_json_fpath = "1_keyframe_data_Keyframes_L30.json"
+processed_data = process_keyframes(input_folder)
+save_keyframe_data(processed_data, output_json_fpath)
