@@ -38,7 +38,7 @@ def process_keyframes(video_folder):
             img = cv2.imread(frame_path)
 
             # Detect objects
-            detected_objects, _, detected_objects_summary = detect_objects(frame_path)
+            detected_objects, confidences, colors, color_percentages, object_counts = detect_objects(frame_path)
 
             # Text Extraction (OCR)
             text = extract_text_img(img)
@@ -46,7 +46,9 @@ def process_keyframes(video_folder):
             keyframe_data.append({
                 'keyframe': keyframe,
                 'detected_objects': detected_objects,
-                'detected_objects_summary': detected_objects_summary,
+                'colors': colors,
+                'color_percentages': color_percentages,
+                'object_counts': object_counts,
                 'extracted_text': text,
             })
 
@@ -56,7 +58,7 @@ def process_keyframes(video_folder):
 
 
 # Example usage:
-input_folder = r'V:\AIC-2024\Data_2024\Keyframe\keyframes'
-output_json_fpath = "1_keyframe_data_Keyframes_L30.json"
+input_folder = r'V:\AIC-2024\Data_2024\Keyframe\Keyframes_L29\keyframes'
+output_json_fpath = "1_keyframe_data_Keyframes_L29.json"
 processed_data = process_keyframes(input_folder)
 save_keyframe_data(processed_data, output_json_fpath)
