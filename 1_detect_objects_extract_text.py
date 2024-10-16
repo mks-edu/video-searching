@@ -1,5 +1,4 @@
 import os
-import json
 import cv2
 from keyframe.detect_object import detect_objects
 from keyframe.text import extract_text_img
