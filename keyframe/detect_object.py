@@ -1,4 +1,5 @@
 import cv2
+import torch
 import numpy as np
 import math
 from ultralytics import YOLO
@@ -65,6 +66,7 @@ def detect_dominant_color(bbox, image):
     # Find the dominant color (the one with the highest percentage)
     dominant_color = max(color_percentages, key=color_percentages.get)
     dominant_color_percentage = color_percentages[dominant_color]
+    dominant_color_percentage = dominant_color_percentage.item() if torch.is_tensor(dominant_color_percentage) else dominant_color_percentage
 
     # Return the dominant color and its percentage
     return dominant_color, dominant_color_percentage
