@@ -1,6 +1,5 @@
 import os
 import chromadb
-from chromadb.config import Settings
 import numpy as np
 import torch
 import clip
@@ -9,7 +8,8 @@ from PIL import Image
 from keyframe.transformer_util import MAX_TOKEN_LENGTH, extract_text_embedding, extract_long_text_embedding
 
 collection_names = ['db_video_embedding', 'db_keyframe_embedding', 'db_video_text_embedding', 'db_keyframe_text_embedding']
-
+embedding_function = OpenCLIPEmbeddingFunction()
+data_loader = ImageLoader()
 class VideoChromaDb():
 
     def __init__(self, db_path):
@@ -125,6 +125,7 @@ class VideoChromaDb():
         # Add collection of image_embedding
         self.collections[collection_names[1]].add(
             ids=[image_id],  # Unique ID for the image
+            documents=[extracted_text],
             embeddings=features_image.tolist(),  # Add CLIP embeddings
             metadatas=[metadata]  # Add metadata including detection and OCR results
         )
@@ -139,6 +140,7 @@ class VideoChromaDb():
         # Add collection of image text_embedding
         self.collections[collection_names[3]].add(
             ids=[image_id],  # Unique ID for the image
+            documents=[extracted_text],
             embeddings=extracted_text_image_features.tolist(),  # Add CLIP embeddings
             metadatas=[metadata]  # Add metadata including detection and OCR results
         )

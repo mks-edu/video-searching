@@ -9,7 +9,8 @@ def extract_text_img(img):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     text = pytesseract.image_to_string(gray, lang='vie')
 
-    return preprocess_text(text)
+    # return preprocess_text(text)
+    return text
 def extract_text(image_path):
     img = cv2.imread(image_path)
     return extract_text_img(img)
