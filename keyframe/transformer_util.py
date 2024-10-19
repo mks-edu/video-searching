@@ -1,5 +1,6 @@
 from transformers import CLIPProcessor, CLIPModel, CLIPTokenizer
 import torch
+import numpy as np
 from PIL import Image
 import cv2
 
@@ -11,20 +12,28 @@ clip_tokenizer = CLIPTokenizer.from_pretrained("openai/clip-vit-base-patch32")
 
 MAX_TOKEN_LENGTH = 77  # Default token limit for CLIP
 
+
+# Function to normalize embeddings
+def normalize_embedding(embedding):
+    norm = np.linalg.norm(embedding)
+    if norm == 0:
+        return embedding  # Avoid division by zero
+    return embedding / norm
+
 # Function to extract image embedding using CLIP
 def extract_image_embedding(image_path):
     image = Image.open(image_path)
     inputs = clip_processor(images=image, return_tensors="pt").to(device)
     with torch.no_grad():
         image_embedding = clip_model.get_image_features(**inputs).cpu().numpy()
-    return image_embedding
+    return normalize_embedding(image_embedding)
 
 # Function to handle long text inputs for text embeddings
 def extract_text_embedding(text, max_length=MAX_TOKEN_LENGTH):
     inputs = clip_tokenizer(text, return_tensors="pt", padding=True, truncation=True, max_length=max_length).to(device)
     with torch.no_grad():
         text_embedding = clip_model.get_text_features(**inputs).cpu().numpy()
-    return text_embedding
+    return normalize_embedding(text_embedding)
 
 # Optionally handle chunking of long text if truncation isn't desired
 def extract_long_text_embedding(text, chunk_size=MAX_TOKEN_LENGTH):
@@ -39,4 +48,4 @@ def extract_long_text_embedding(text, chunk_size=MAX_TOKEN_LENGTH):
 
     # Combine embeddings (e.g., average) for the final result
     combined_embedding = sum(embeddings) / len(embeddings)
-    return combined_embedding
+    return normalize_embedding(combined_embedding)

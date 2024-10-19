@@ -6,6 +6,7 @@ import clip
 import json
 from PIL import Image
 from keyframe.transformer_util import MAX_TOKEN_LENGTH, extract_text_embedding, extract_long_text_embedding
+from keyframe.transformer_util import normalize_embedding
 
 collection_names = ['db_video_embedding', 'db_keyframe_embedding', 'db_video_text_embedding', 'db_keyframe_text_embedding']
 class VideoChromaDb():
@@ -158,9 +159,10 @@ class VideoChromaDb():
         with torch.no_grad():
             query_embedding = self.model.encode_text(text_tokens).cpu().numpy()
 
+        normalized_text_embedding = normalize_embedding(query_embedding)
         # Query the collection for similar images/text
         results = self.collections[collection_names[collection_id]].query(
-            query_embeddings=query_embedding.tolist(),
+            query_embeddings=normalized_text_embedding.tolist(),
             n_results=n_results
         )
 
