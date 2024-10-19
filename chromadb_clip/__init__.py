@@ -40,6 +40,15 @@ class VideoChromaDb():
                 self.collections[collection_name] = client.create_collection(collection_name)
                 print(f"Collection '{collection_name}' created.")
 
+    def hasFrame(self, video_cat, video_name, frame_name):
+        image_id = f"{video_cat}_{video_name}_{frame_name}"
+
+        for collection_name, collection in self.collections.items():
+            result = collection.get(ids=[image_id])
+            if result is not None and result['embeddings'] is not None:
+                return True
+
+        return False
 
     # Function to add data to the collection
     def add_video_and_image_to_collection(self, video_cat, video_name, video_npy_file, image_filepath, json_file, extracted_text):
@@ -63,11 +72,13 @@ class VideoChromaDb():
             features_image = self.model.encode_image(image_preprocessed).cpu().numpy()
 
         # Load CLIP features for the video from .npy file (video-level embedding)
-        video_features = np.load(video_npy_file)
+        if os.path.exists(video_npy_file):
+            video_features = np.load(video_npy_file)
 
         # Load detection data from .json file
-        with open(json_file, 'r') as f:
-            detection_data = json.load(f)
+        if os.path.exists(json_file):
+            with open(json_file, 'r') as f:
+                detection_data = json.load(f)
 
         # Embed the extracted OCR text using CLIP
         if len(extracted_text) < MAX_TOKEN_LENGTH:
@@ -81,11 +92,11 @@ class VideoChromaDb():
 
         # Convert lists in detection_data to JSON strings
         metadata = {
-            'detection_scores': json.dumps(detection_data['detection_scores']),  # Convert list to string
-            'detection_class_names': json.dumps(detection_data['detection_class_names']),  # Convert list to string
-            'detection_class_entities': json.dumps(detection_data['detection_class_entities']),  # Convert list to string
-            'detection_boxes': json.dumps(detection_data['detection_boxes']),  # Convert list to string
-            'detection_class_labels': json.dumps(detection_data['detection_class_labels']),  # Convert list to string
+            # 'detection_scores': json.dumps(detection_data['detection_scores']),  # Convert list to string
+            # 'detection_class_names': json.dumps(detection_data['detection_class_names']),  # Convert list to string
+            # 'detection_class_entities': json.dumps(detection_data['detection_class_entities']),  # Convert list to string
+            # 'detection_boxes': json.dumps(detection_data['detection_boxes']),  # Convert list to string
+            # 'detection_class_labels': json.dumps(detection_data['detection_class_labels']),  # Convert list to string
             'ocr_text': extracted_text,  # Already a string
             'video_cat': video_cat,  # Already a string
             'video_name': video_name,  # Already a string
