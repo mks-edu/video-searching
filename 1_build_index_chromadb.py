@@ -10,7 +10,7 @@ def save_extract_text(extract_text_output_folder, video_cat, video_name, frame_n
         os.makedirs(extract_text_video_output_folder)
 
     extract_fpath = os.path.join(extract_text_video_output_folder, frame_name + '.txt')
-    with open(extract_fpath, 'w') as file:
+    with open(extract_fpath, 'w', encoding='utf8') as file:
         # Write a string to the file
         file.write(text)
 

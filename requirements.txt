@@ -7,3 +7,4 @@ torchvision
 scikit-learn
 transformers
 chromadb
+open_clip_torch
